@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reunión de Matrimonios | Iglesia San Martín 19</title>
+    <!-- Ícono de la pestaña (favicon) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💍</text></svg>">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Firebase (inicio de sesión de encargados) -->
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#fbf9f5',
+                            100: '#f6f0e6',
+                            200: '#eddcc5',
+                            300: '#e1c29e',
+                            400: '#d3a274',
+                            500: '#c58552',
+                            600: '#b76f44',
+                            700: '#98543a',
+                            800: '#7b4434',
+                            900: '#64392e',
+                        },
+                        navy: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                            950: '#090d16',
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Playfair Display"', 'serif'],
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .hero-gradient {
+            background: linear-gradient(180deg, rgba(15, 23, 42, 0.65) 0%, rgba(15, 23, 42, 0.92) 100%);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.6);
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #d3a274;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="bg-brand-50 font-sans text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- ========================================== -->
+    <!-- INTERFAZ PÚBLICA (LANDING PAGE)            -->
+    <!-- ========================================== -->
+    <div id="publicSite" class="flex flex-col flex-grow">
+        
+        <!-- Header Navigation -->
+        <nav class="bg-white/80 backdrop-blur-md sticky top-0 z-40 border-b border-brand-100 shadow-sm">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-brand-100 flex items-center justify-center text-brand-700 font-serif font-bold text-xl shadow-inner">
+                        💍
+                    </div>
+                    <div class="flex flex-col">
+                        <span class="font-serif font-bold text-xl text-navy-900 tracking-tight leading-tight">Ministerio de Matrimonios</span>
+                        <span class="text-xs font-semibold text-brand-600 tracking-wider uppercase">Iglesia San Martín 19</span>
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                    <a href="#inicio" class="hover:text-brand-600 transition-colors">Inicio</a>
+                    <a href="#secciones" class="hover:text-brand-600 transition-colors">Secciones</a>
+                    <a href="#contacto" class="hover:text-brand-600 transition-colors">Contacto</a>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-grow">
+            
+            <!-- Hero Section -->
+            <section id="inicio" class="relative bg-navy-900 text-white min-h-[520px] md:min-h-[600px] flex items-center justify-center overflow-hidden">
+                <!-- Background Image -->
+                <div class="absolute inset-0 z-0">
+                    <img src="https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?q=80&w=1600&auto=format&fit=crop" 
+                         alt="Reunión de Matrimonios Portada" 
+                         class="w-full h-full object-cover object-center opacity-40 scale-105 transform hover:scale-100 transition-transform duration-1000"
+                         onerror="this.src='https://placehold.co/1600x900/1e293b/ffffff?text=Reunion+de+Matrimonios'">
+                    <div class="absolute inset-0 hero-gradient"></div>
+                </div>
+
+                <!-- Hero Content -->
+                <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center py-16">
+                    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-brand-200 text-sm font-medium mb-6">
+                        <i class="fa-solid fa-heart text-brand-300 text-xs"></i>
+                        <span>Unidos en amor y propósito</span>
+                    </div>
+                    
+                    <h1 class="text-4xl sm:text-5xl md:text-6xl font-serif font-bold tracking-tight mb-6 leading-tight text-white drop-shadow-sm">
+                        Reunión de Matrimonios
+                    </h1>
+
+                    <!-- Bible Verse Banner -->
+                    <div class="max-w-2xl mx-auto bg-white/10 backdrop-blur-md rounded-2xl p-6 sm:p-8 border border-white/15 shadow-2xl my-4">
+                        <i class="fa-solid fa-quote-left text-2xl text-brand-300 mb-2 opacity-60"></i>
+                        <p class="font-serif italic text-lg sm:text-xl md:text-2xl text-brand-100 leading-relaxed">
+                            «Uno solo puede ser vencido, pero dos pueden resistir. ¡El cordón de tres dobleces no se rompe fácilmente!»
+                        </p>
+                        <p class="mt-4 text-xs sm:text-sm font-semibold tracking-wider text-brand-300 uppercase">
+                            — Eclesiastés 4:12
+                        </p>
+                    </div>
+
+                    <div class="mt-8 flex justify-center gap-4">
+                        <a href="#secciones" class="inline-flex items-center gap-2 bg-brand-600 hover:bg-brand-500 text-white font-medium px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-0.5">
+                            Ver información y actividades
+                            <i class="fa-solid fa-arrow-down text-sm"></i>
+                        </a>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cards / Interactive Grid Section -->
+            <section id="secciones" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-serif font-bold text-navy-900 mb-4">
+                        Espacios para Edificar tu Matrimonio
+                    </h2>
+                    <p class="text-slate-600 text-base sm:text-lg">
+                        Conoce todo lo necesario para participar, conectarte con otros matrimonios y formar parte de nuestra comunidad.
+                    </p>
+                    <div class="w-16 h-1 bg-brand-400 mx-auto mt-4 rounded-full"></div>
+                </div>
+
+                <!-- Grid Container -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- CARD 1: Información -->
+                    <div class="group bg-white rounded-2xl p-8 border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between transform hover:-translate-y-2 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-brand-400 to-brand-600"></div>
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-brand-600 group-hover:text-white transition-colors duration-300 shadow-inner">
+                                <i class="fa-solid fa-calendar-days"></i>
+                            </div>
+                            <h3 class="text-2xl font-serif font-bold text-navy-900 mb-3 group-hover:text-brand-700 transition-colors">
+                                Información
+                            </h3>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                Detalle de nuestros próximos encuentros, horarios, ubicación y temas diseñados para fortalecer el matrimonio.
+                            </p>
+                        </div>
+                        <button onclick="openModal('infoModal')" class="w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-brand-50 text-navy-900 hover:text-brand-700 font-semibold py-3 px-4 rounded-xl border border-slate-200 hover:border-brand-200 transition-all duration-200">
+                            <i class="fa-solid fa-circle-info text-brand-500"></i>
+                            <span>Ver Detalles</span>
+                        </button>
+                    </div>
+
+                    <!-- CARD 2: Grupo de WhatsApp -->
+                    <div class="group bg-white rounded-2xl p-8 border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between transform hover:-translate-y-2 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-emerald-400 to-emerald-600"></div>
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-emerald-600 group-hover:text-white transition-colors duration-300 shadow-inner">
+                                <i class="fa-brands fa-whatsapp"></i>
+                            </div>
+                            <h3 class="text-2xl font-serif font-bold text-navy-900 mb-3 group-hover:text-emerald-700 transition-colors">
+                                Grupo de WhatsApp
+                            </h3>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                Únete a nuestra comunidad para recibir reflexiones, anuncios importantes y mantenernos en constante contacto.
+                            </p>
+                        </div>
+                        <a href="https://chat.whatsapp.com/Ep2uG4TV0suKbjUQechFbr" target="_blank" rel="noopener noreferrer" class="w-full inline-flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold py-3 px-4 rounded-xl shadow-md hover:shadow-lg transition-all duration-200">
+                            <i class="fa-brands fa-whatsapp text-lg"></i>
+                            <span>Unirme al Grupo</span>
+                        </a>
+                    </div>
+
+                    <!-- CARD 3: Ofrenda -->
+                    <div class="group bg-white rounded-2xl p-8 border border-slate-100 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between transform hover:-translate-y-2 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-amber-400 to-brand-500"></div>
+                        <div>
+                            <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-2xl mb-6 group-hover:bg-amber-600 group-hover:text-white transition-colors duration-300 shadow-inner">
+                                <i class="fa-solid fa-hand-holding-heart"></i>
+                            </div>
+                            <h3 class="text-2xl font-serif font-bold text-navy-900 mb-3 group-hover:text-amber-700 transition-colors">
+                                Ofrenda
+                            </h3>
+                            <p class="text-slate-600 text-sm leading-relaxed mb-6">
+                                Tu aportación voluntaria ayuda a seguir organizando talleres, eventos y bendiciendo a más familias.
+                            </p>
+                        </div>
+                        <button onclick="openModal('ofrendaModal')" class="w-full inline-flex items-center justify-center gap-2 bg-slate-50 hover:bg-amber-50 text-navy-900 hover:text-amber-800 font-semibold py-3 px-4 rounded-xl border border-slate-200 hover:border-amber-200 transition-all duration-200">
+                            <i class="fa-solid fa-qrcode text-amber-600"></i>
+                            <span>Ofrendar Ahora</span>
+                        </button>
+                    </div>
+
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer id="contacto" class="bg-navy-900 text-slate-400 py-12 border-t border-slate-800 mt-auto">
+            <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+                <div class="flex flex-col justify-center items-center gap-1 text-white font-serif font-bold text-xl mb-4">
+                    <span class="flex items-center gap-2">💍 Reunión de Matrimonios</span>
+                    <span class="text-xs font-sans font-semibold text-brand-300 tracking-widest uppercase">Iglesia San Martín 19</span>
+                </div>
+                <p class="text-sm text-slate-400 max-w-md mx-auto mb-6">
+                    Construyendo familias fuertes, unidas en la fe y cimentadas en el amor incondicional.
+                </p>
+
+                <!-- Redes Sociales -->
+                <div class="flex flex-col items-center mb-8">
+                    <div class="flex justify-center space-x-6 text-xl mb-2 opacity-60">
+                        <a href="#" class="text-slate-400 hover:text-brand-300 transition-colors" aria-label="Facebook"><i class="fa-brands fa-facebook"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-brand-300 transition-colors" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="text-slate-400 hover:text-brand-300 transition-colors" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a>
+                    </div>
+                    <span class="text-[11px] uppercase tracking-widest text-brand-400 font-semibold bg-brand-900/40 px-3 py-1 rounded-full border border-brand-500/20">
+                        Próximamente
+                    </span>
+                </div>
+
+                <!-- Botón Acceso Encargados -->
+                <div class="mb-8">
+                    <button onclick="openModal('encargadosModal')" class="inline-flex items-center gap-2 bg-slate-800 hover:bg-slate-700 text-brand-200 hover:text-white font-medium px-5 py-2.5 rounded-xl border border-slate-700 hover:border-brand-500/50 transition-all text-xs tracking-wider uppercase shadow-md">
+                        <i class="fa-solid fa-user-gear text-brand-400"></i>
+                        <span>Acceso Encargados</span>
+                    </button>
+                </div>
+
+                <p class="text-xs text-slate-500">
+                    &copy; 2026 Ministerio de Matrimonios - Iglesia San Martín 19. Todos los derechos reservados.
+                </p>
+            </div>
+        </footer>
+    </div>
+
+
+    <!-- ========================================== -->
+    <!-- INTERFAZ PRIVADA (PANEL DE ENCARGADOS)    -->
+    <!-- ========================================== -->
+    <div id="adminSite" class="hidden flex-col min-h-screen bg-slate-900 text-slate-100">
+        <!-- Top Navigation Admin -->
+        <header class="bg-navy-950/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-400/40 flex items-center justify-center text-brand-300 text-xl">
+                        💍
+                    </div>
+                    <div>
+                        <h2 class="font-serif font-bold text-lg text-white leading-tight">Panel de Gestión</h2>
+                        <p class="text-xs font-semibold text-brand-300 tracking-wider uppercase">Iglesia San Martín 19</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-4">
+                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">
+                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span id="activeUser">Encargado</span>
+                    </div>
+                    <button onclick="logoutAdmin()" class="inline-flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/20 font-medium px-4 py-2 rounded-xl text-xs transition-all">
+                        <i class="fa-solid fa-right-from-bracket"></i>
+                        <span>Cerrar Sesión</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Admin Main Content -->
+        <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-serif font-bold text-white">Planificación de la Reunión</h1>
+                    <p class="text-slate-400 text-sm mt-1">Completa las asignaciones del evento para generar el resumen listo para WhatsApp.</p>
+                </div>
+                <button onclick="resetForm()" class="self-start md:self-auto px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-xs font-semibold transition-colors flex items-center gap-2">
+                    <i class="fa-solid fa-rotate-left"></i> Limpiar Campos
+                </button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                
+                <!-- Left Column: Form -->
+                <div class="lg:col-span-7 bg-navy-800/50 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-sm">
+                    <h3 class="text-lg font-serif font-bold text-white mb-6 flex items-center gap-2 border-b border-white/10 pb-4">
+                        <i class="fa-solid fa-clipboard-list text-brand-400"></i>
+                        <span>Asignación de Roles</span>
+                    </h3>
+
+                    <form class="space-y-5">
+                        
+                        <!-- Fecha y Hora -->
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label for="inputFecha" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <i class="fa-regular fa-calendar mr-1 text-brand-400"></i> Fecha de la Reunión
+                                </label>
+                                <input type="text" id="inputFecha" value="Viernes, 28 de Noviembre" onkeyup="updatePreview()" oninput="updatePreview()" placeholder="Ej. Viernes, 28 de Noviembre" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            </div>
+                            <div>
+                                <label for="inputHora" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                    <i class="fa-regular fa-clock mr-1 text-brand-400"></i> Horario
+                                </label>
+                                <input type="text" id="inputHora" value="19:30 Hs" onkeyup="updatePreview()" oninput="updatePreview()" placeholder="Ej. 19:30 Hs" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            </div>
+                        </div>
+
+                        <!-- Tema de enseñanza -->
+                        <div>
+                            <label for="inputTema" class="block text-xs font-semibold uppercase tracking-wider text-brand-300 mb-1.5">
+                                <i class="fa-solid fa-chalkboard-user mr-1 text-brand-400"></i> Tema de enseñanza
+                            </label>
+                            <input type="text" id="inputTema" placeholder="Escribe el tema o título de la enseñanza" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-brand-500/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                        </div>
+
+                        <!-- Multimedia -->
+                        <div>
+                            <label for="inputMultimedia" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-desktop mr-1 text-brand-400"></i> Multimedia
+                            </label>
+                            <input type="text" id="inputMultimedia" placeholder="Escribe el nombre del encargado de multimedia" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                        </div>
+
+                        <!-- Preside -->
+                        <div>
+                            <label for="inputPreside" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-user-tie mr-1 text-brand-400"></i> Preside la reunión
+                            </label>
+                            <input type="text" id="inputPreside" placeholder="Escribe quién preside la reunión" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                        </div>
+
+                        <!-- Director de coro -->
+                        <div>
+                            <label for="inputCoro" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-music mr-1 text-brand-400"></i> Director de coro / Alabanza
+                            </label>
+                            <input type="text" id="inputCoro" placeholder="Escribe el encargado de la música/alabanza" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                        </div>
+
+                        <!-- Rompehielo -->
+                        <div>
+                            <label for="inputRompehielo" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-face-smile mr-1 text-brand-400"></i> Rompehielo
+                            </label>
+                            <input type="text" id="inputRompehielo" placeholder="Persona o dinámica para el rompehielo" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                        </div>
+
+                        <!-- Orador -->
+                        <div>
+                            <label for="inputOrador" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-book-open-reader mr-1 text-brand-400"></i> Orador / Predicador
+                            </label>
+                            <input type="text" id="inputOrador" placeholder="Nombre del orador o matrimonio expositor" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                        </div>
+
+                        <!-- Qué se necesita -->
+                        <div>
+                            <label for="inputNecesidades" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-box-open mr-1 text-brand-400"></i> ¿Qué se necesita?
+                            </label>
+                            <textarea id="inputNecesidades" rows="4" placeholder="Ej. Traer bocaditos para compartir, 40 hojas impresas, proyector..." onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-3 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all custom-scrollbar"></textarea>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Right Column: Live Preview & Actions -->
+                <div class="lg:col-span-5 flex flex-col gap-6">
+                    <div class="bg-navy-800/50 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-sm flex flex-col justify-between h-full">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
+                                <h3 class="text-lg font-serif font-bold text-white flex items-center gap-2">
+                                    <i class="fa-brands fa-whatsapp text-emerald-400"></i>
+                                    <span>Vista Previa del Mensaje</span>
+                                </h3>
+                                <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 rounded-full">Para WhatsApp</span>
+                            </div>
+
+                            <div class="bg-emerald-950/30 border border-emerald-500/20 rounded-2xl p-5 mb-6 text-slate-200 text-sm font-sans leading-relaxed whitespace-pre-wrap select-all shadow-inner relative overflow-hidden">
+                                <div id="previewContent"></div>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="space-y-3 pt-2">
+                            <button onclick="copyAndSendWhatsApp()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 flex items-center justify-center gap-3 text-base">
+                                <i class="fa-brands fa-whatsapp text-xl"></i>
+                                <span>Copiar y Enviar a WhatsApp</span>
+                            </button>
+
+                            <button onclick="copyOnlyText()" class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm">
+                                <i class="fa-regular fa-copy text-brand-300"></i>
+                                <span>Solo Copiar Texto</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-emerald-600 text-white font-medium px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-400/30">
+        <i class="fa-solid fa-circle-check text-lg"></i>
+        <span id="toastMsg">¡Texto copiado al portapapeles!</span>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODALES                                    -->
+    <!-- ========================================== -->
+
+    <!-- MODAL 1: Información -->
+    <div id="infoModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <button onclick="closeModal('infoModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full w-9 h-9 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-brand-100 text-brand-700 flex items-center justify-center">
+                    <i class="fa-solid fa-circle-info text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-serif font-bold text-navy-900">Información del Ministerio</h3>
+            </div>
+
+            <div class="space-y-4 text-slate-600 text-sm">
+                <div class="p-4 bg-brand-50/60 rounded-2xl border border-brand-100">
+                    <h4 class="font-bold text-navy-900 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-calendar-check text-brand-600"></i> Días y Horarios
+                    </h4>
+                    <p>Nos reunimos periódicamente cada último viernes del mes a las 19:30 Hs.</p>
+                </div>
+
+                <div class="p-4 bg-brand-50/60 rounded-2xl border border-brand-100">
+                    <h4 class="font-bold text-navy-900 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-map-pin text-brand-600"></i> Ubicación
+                    </h4>
+                    <p>Iglesia San Martín 19 — Salón Principal (Estacionamiento disponible).</p>
+                </div>
+
+                <div class="p-4 bg-brand-50/60 rounded-2xl border border-brand-100">
+                    <h4 class="font-bold text-navy-900 mb-1 flex items-center gap-2">
+                        <i class="fa-solid fa-book-open text-brand-600"></i> ¿Qué hacemos?
+                    </h4>
+                    <p>Talleres interactivos, tiempos de alabanza, temas bíblicos enfocados en la vida de pareja y dinámicas de integración.</p>
+                </div>
+            </div>
+
+            <div class="mt-8 pt-4 border-t border-slate-100 flex justify-end">
+                <button onclick="closeModal('infoModal')" class="bg-navy-900 hover:bg-navy-800 text-white font-medium px-6 py-2.5 rounded-xl transition-colors text-sm">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 2: Ofrenda -->
+    <div id="ofrendaModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <button onclick="closeModal('ofrendaModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full w-9 h-9 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                    <i class="fa-solid fa-hand-holding-heart text-xl"></i>
+                </div>
+                <h3 class="text-2xl font-serif font-bold text-navy-900">Ofrenda y Donaciones</h3>
+            </div>
+
+            <p class="text-slate-600 text-sm mb-6">
+                Agradecemos profundamente tu generosidad. Tu aportación nos permite seguir desarrollando talleres y bendiciendo a las familias.
+            </p>
+
+            <div class="space-y-4">
+                <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider block mb-1">Alias Bancario</span>
+                    <div class="flex justify-between items-center text-sm font-semibold text-navy-900">
+                        <span>Alias:</span>
+                        <span class="font-mono text-brand-700">matrimonios.sanmartin</span>
+                    </div>
+                    <button onclick="copyToClipboardText('matrimonios.sanmartin'); showToast('¡Alias copiado!');" class="mt-3 text-xs text-brand-600 hover:text-brand-800 font-medium flex items-center gap-1">
+                        <i class="fa-regular fa-copy"></i> Copiar Alias
+                    </button>
+                </div>
+
+                <div class="p-4 bg-amber-50/50 rounded-2xl border border-amber-200 text-center flex flex-col items-center">
+                    <span class="text-xs font-semibold text-amber-900 uppercase tracking-wider mb-2">Escanea el Código QR</span>
+                    <img src="https://placehold.co/180x180/fef3c7/78350f?text=Codigo+QR" alt="Código QR de Ofrenda" class="w-36 h-36 rounded-xl border border-amber-200">
+                </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-slate-100 flex justify-end">
+                <button onclick="closeModal('ofrendaModal')" class="bg-navy-900 hover:bg-navy-800 text-white font-medium px-6 py-2.5 rounded-xl transition-colors text-sm">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: Acceso Encargados (Login) -->
+    <div id="encargadosModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-3xl max-w-sm w-full p-6 sm:p-8 shadow-2xl relative overflow-hidden">
+            <button onclick="closeModal('encargadosModal')" class="absolute top-5 right-5 text-slate-400 hover:text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-full w-9 h-9 flex items-center justify-center transition-colors">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+
+            <div class="flex flex-col items-center text-center mb-6">
+                <div class="w-12 h-12 rounded-2xl bg-brand-100 text-brand-700 flex items-center justify-center text-xl mb-3 shadow-inner">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <h3 class="text-2xl font-serif font-bold text-navy-900">Acceso Encargados</h3>
+                <p class="text-xs text-slate-500 mt-1">Ingresa para administrar la reunión</p>
+            </div>
+
+            <form onsubmit="event.preventDefault(); handleLogin();" class="space-y-4">
+                <div>
+                    <label for="loginUsername" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Usuario</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <i class="fa-solid fa-user text-xs"></i>
+                        </span>
+                        <input type="text" id="loginUsername" required placeholder="Usuario" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="loginPassword" class="block text-xs font-semibold text-slate-700 uppercase tracking-wider mb-1">Contraseña</label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+                            <i class="fa-solid fa-key text-xs"></i>
+                        </span>
+                        <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full pl-9 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-brand-500">
+                    </div>
+                </div>
+
+                <div id="loginError" class="hidden p-3 bg-red-50 border border-red-200 text-red-600 text-xs rounded-xl text-center font-medium">
+                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Usuario o contraseña incorrectos.
+                </div>
+
+                <button type="submit" class="w-full bg-navy-900 hover:bg-navy-800 text-white font-semibold py-3 px-4 rounded-xl shadow-md transition-all duration-200 mt-2">
+                    Iniciar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript Logic -->
+    <script>
+        let formattedMessage = '';
+
+        // Configuración de Firebase (estos datos no son secretos)
+        const firebaseConfig = {
+            apiKey: "AIzaSyDmihXiHpdYTeGaqDa8HXDhcN1kY7haSNU",
+            authDomain: "matrimonios-45e29.firebaseapp.com",
+            projectId: "matrimonios-45e29",
+            storageBucket: "matrimonios-45e29.firebasestorage.app",
+            messagingSenderId: "768349762671",
+            appId: "1:768349762671:web:d6112cae6d8db4abc7899a"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        // La sesión no se guarda: al recargar la página se vuelve a la parte pública
+        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
+
+        // Los encargados entran con un nombre; por detrás se convierte en este correo
+        const LOGIN_DOMAIN = '@matrimonios.app';
+
+        // Modal Helpers
+        function openModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) {
+                modal.classList.remove('hidden');
+                if (id === 'encargadosModal') {
+                    const errorEl = document.getElementById('loginError');
+                    if (errorEl) errorEl.classList.add('hidden');
+                }
+            }
+        }
+
+        function closeModal(id) {
+            const modal = document.getElementById(id);
+            if (modal) modal.classList.add('hidden');
+        }
+
+        // Login con Firebase Authentication
+        async function handleLogin() {
+            const userInput = document.getElementById('loginUsername').value.trim();
+            const passInput = document.getElementById('loginPassword').value;
+            const errorEl = document.getElementById('loginError');
+
+            try {
+                const email = userInput.toLowerCase() + LOGIN_DOMAIN;
+                await auth.signInWithEmailAndPassword(email, passInput);
+
+                if (errorEl) errorEl.classList.add('hidden');
+                closeModal('encargadosModal');
+
+                document.getElementById('publicSite').classList.add('hidden');
+                document.getElementById('adminSite').classList.remove('hidden');
+                document.getElementById('adminSite').classList.add('flex');
+
+                document.getElementById('activeUser').innerText = userInput;
+                window.scrollTo(0, 0);
+                updatePreview();
+            } catch (error) {
+                if (errorEl) errorEl.classList.remove('hidden');
+            }
+        }
+
+        // Logout from Admin Site
+        function logoutAdmin() {
+            auth.signOut();
+            document.getElementById('adminSite').classList.add('hidden');
+            document.getElementById('adminSite').classList.remove('flex');
+            document.getElementById('publicSite').classList.remove('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+            window.scrollTo(0, 0);
+        }
+
+        // Generate Formatted Text & Update Live Preview synchronously
+        function updatePreview() {
+            const fecha = document.getElementById('inputFecha')?.value.trim() || 'A definir';
+            const hora = document.getElementById('inputHora')?.value.trim() || 'A definir';
+            const tema = document.getElementById('inputTema')?.value.trim() || 'Pendiente';
+            const multimedia = document.getElementById('inputMultimedia')?.value.trim() || 'Pendiente';
+            const preside = document.getElementById('inputPreside')?.value.trim() || 'Pendiente';
+            const coro = document.getElementById('inputCoro')?.value.trim() || 'Pendiente';
+            const rompehielo = document.getElementById('inputRompehielo')?.value.trim() || 'Pendiente';
+            const orador = document.getElementById('inputOrador')?.value.trim() || 'Pendiente';
+            const necesidades = document.getElementById('inputNecesidades')?.value.trim() || 'Ninguna por el momento';
+
+            formattedMessage = `📌 *REUNIÓN DE MATRIMONIOS — ORGANIZACIÓN*
+🏛️ *Iglesia San Martín 19*
+📅 *Fecha:* ${fecha}
+⏰ *Hora:* ${hora}
+
+📖 *TEMA DE ENSEÑANZA:*
+${tema}
+
+👥 *ASIGNACIÓN DE ENCARGADOS:*
+💻 *Multimedia:* ${multimedia}
+🎙️ *Preside:* ${preside}
+🎵 *Director de Coro:* ${coro}
+🧊 *Rompehielo:* ${rompehielo}
+🗣️ *Orador:* ${orador}
+
+📋 *¿QUÉ SE NECESITA?*
+${necesidades}
+
+¡Bendiciones a todos los servidores! 🙏✨`;
+
+            const previewElement = document.getElementById('previewContent');
+            if (previewElement) {
+                previewElement.innerText = formattedMessage;
+            }
+        }
+
+        // Copy Text Helper
+        function copyToClipboardText(text) {
+            const tempInput = document.createElement('textarea');
+            tempInput.value = text;
+            document.body.appendChild(tempInput);
+            tempInput.select();
+            document.execCommand('copy');
+            document.body.removeChild(tempInput);
+        }
+
+        // Toast Helper
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            if (toast && toastMsg) {
+                toastMsg.innerText = msg;
+                toast.classList.remove('translate-y-20', 'opacity-0');
+                
+                setTimeout(() => {
+                    toast.classList.add('translate-y-20', 'opacity-0');
+                }, 3000);
+            }
+        }
+
+        // Copy and Send via WhatsApp
+        function copyAndSendWhatsApp() {
+            updatePreview();
+            copyToClipboardText(formattedMessage);
+            showToast('¡Texto copiado! Abriendo WhatsApp...');
+            
+            const encodedText = encodeURIComponent(formattedMessage);
+            setTimeout(() => {
+                window.open(`https://wa.me/?text=${encodedText}`, '_blank');
+            }, 600);
+        }
+
+        // Copy Only
+        function copyOnlyText() {
+            updatePreview();
+            copyToClipboardText(formattedMessage);
+            showToast('¡Texto copiado al portapapeles!');
+        }
+
+        // Reset Form
+        function resetForm() {
+            if(document.getElementById('inputTema')) document.getElementById('inputTema').value = '';
+            if(document.getElementById('inputMultimedia')) document.getElementById('inputMultimedia').value = '';
+            if(document.getElementById('inputPreside')) document.getElementById('inputPreside').value = '';
+            if(document.getElementById('inputCoro')) document.getElementById('inputCoro').value = '';
+            if(document.getElementById('inputRompehielo')) document.getElementById('inputRompehielo').value = '';
+            if(document.getElementById('inputOrador')) document.getElementById('inputOrador').value = '';
+            if(document.getElementById('inputNecesidades')) document.getElementById('inputNecesidades').value = '';
+            updatePreview();
+        }
+
+        // Initial preview generation on load
+        window.onload = function() {
+            updatePreview();
+        }
+    </script>
+</body>
+</html>
