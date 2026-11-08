@@ -255,169 +255,6 @@
     </div>
 
 
-    <!-- ========================================== -->
-    <!-- INTERFAZ PRIVADA (PANEL DE ENCARGADOS)    -->
-    <!-- ========================================== -->
-    <div id="adminSite" class="hidden flex-col min-h-screen bg-slate-900 text-slate-100">
-        <!-- Top Navigation Admin -->
-        <header class="bg-navy-950/90 backdrop-blur-md border-b border-white/10 sticky top-0 z-40">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-brand-500/20 border border-brand-400/40 flex items-center justify-center text-brand-300 text-xl">
-                        💍
-                    </div>
-                    <div>
-                        <h2 class="font-serif font-bold text-lg text-white leading-tight">Panel de Gestión</h2>
-                        <p class="text-xs font-semibold text-brand-300 tracking-wider uppercase">Iglesia San Martín 19</p>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-4">
-                    <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs text-slate-300">
-                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span id="activeUser">Encargado</span>
-                    </div>
-                    <button onclick="logoutAdmin()" class="inline-flex items-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-300 border border-red-500/20 font-medium px-4 py-2 rounded-xl text-xs transition-all">
-                        <i class="fa-solid fa-right-from-bracket"></i>
-                        <span>Cerrar Sesión</span>
-                    </button>
-                </div>
-            </div>
-        </header>
-
-        <!-- Admin Main Content -->
-        <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div class="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h1 class="text-2xl sm:text-3xl font-serif font-bold text-white">Planificación de la Reunión</h1>
-                    <p class="text-slate-400 text-sm mt-1">Completa las asignaciones del evento para generar el resumen listo para WhatsApp.</p>
-                </div>
-                <button onclick="resetForm()" class="self-start md:self-auto px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-xs font-semibold transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-rotate-left"></i> Limpiar Campos
-                </button>
-            </div>
-
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                
-                <!-- Left Column: Form -->
-                <div class="lg:col-span-7 bg-navy-800/50 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-sm">
-                    <h3 class="text-lg font-serif font-bold text-white mb-6 flex items-center gap-2 border-b border-white/10 pb-4">
-                        <i class="fa-solid fa-clipboard-list text-brand-400"></i>
-                        <span>Asignación de Roles</span>
-                    </h3>
-
-                    <form class="space-y-5">
-                        
-                        <!-- Fecha y Hora -->
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label for="inputFecha" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                    <i class="fa-regular fa-calendar mr-1 text-brand-400"></i> Fecha de la Reunión
-                                </label>
-                                <input type="text" id="inputFecha" onkeyup="updatePreview()" oninput="updatePreview()" placeholder="Ej. Viernes, 28 de Noviembre" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                            </div>
-                            <div>
-                                <label for="inputHora" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                    <i class="fa-regular fa-clock mr-1 text-brand-400"></i> Horario
-                                </label>
-                                <input type="text" id="inputHora" onkeyup="updatePreview()" oninput="updatePreview()" placeholder="Ej. 19:30 Hs" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                            </div>
-                        </div>
-
-                        <!-- Tema de enseñanza -->
-                        <div>
-                            <label for="inputTema" class="block text-xs font-semibold uppercase tracking-wider text-brand-300 mb-1.5">
-                                <i class="fa-solid fa-chalkboard-user mr-1 text-brand-400"></i> Tema de enseñanza
-                            </label>
-                            <input type="text" id="inputTema" placeholder="Escribe el tema o título de la enseñanza" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-brand-500/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                        </div>
-
-                        <!-- Multimedia -->
-                        <div>
-                            <label for="inputMultimedia" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                <i class="fa-solid fa-desktop mr-1 text-brand-400"></i> Multimedia
-                            </label>
-                            <input type="text" id="inputMultimedia" placeholder="Escribe el nombre del encargado de multimedia" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                        </div>
-
-                        <!-- Preside -->
-                        <div>
-                            <label for="inputPreside" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                <i class="fa-solid fa-user-tie mr-1 text-brand-400"></i> Preside la reunión
-                            </label>
-                            <input type="text" id="inputPreside" placeholder="Escribe quién preside la reunión" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                        </div>
-
-                        <!-- Director de coro -->
-                        <div>
-                            <label for="inputCoro" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                <i class="fa-solid fa-music mr-1 text-brand-400"></i> Director de coro / Alabanza
-                            </label>
-                            <input type="text" id="inputCoro" placeholder="Escribe el encargado de la música/alabanza" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                        </div>
-
-                        <!-- Rompehielo -->
-                        <div>
-                            <label for="inputRompehielo" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                <i class="fa-solid fa-face-smile mr-1 text-brand-400"></i> Rompehielo
-                            </label>
-                            <input type="text" id="inputRompehielo" placeholder="Persona o dinámica para el rompehielo" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                        </div>
-
-                        <!-- Orador -->
-                        <div>
-                            <label for="inputOrador" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                <i class="fa-solid fa-book-open-reader mr-1 text-brand-400"></i> Orador / Predicador
-                            </label>
-                            <input type="text" id="inputOrador" placeholder="Nombre del orador o matrimonio expositor" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
-                        </div>
-
-                        <!-- Qué se necesita -->
-                        <div>
-                            <label for="inputNecesidades" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
-                                <i class="fa-solid fa-box-open mr-1 text-brand-400"></i> ¿Qué se necesita?
-                            </label>
-                            <textarea id="inputNecesidades" rows="4" placeholder="Ej. Traer bocaditos para compartir, 40 hojas impresas, proyector..." onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-3 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all custom-scrollbar"></textarea>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Right Column: Live Preview & Actions -->
-                <div class="lg:col-span-5 flex flex-col gap-6">
-                    <div class="bg-navy-800/50 border border-white/10 rounded-3xl p-6 sm:p-8 backdrop-blur-sm flex flex-col justify-between h-full">
-                        <div>
-                            <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
-                                <h3 class="text-lg font-serif font-bold text-white flex items-center gap-2">
-                                    <i class="fa-brands fa-whatsapp text-emerald-400"></i>
-                                    <span>Vista Previa del Mensaje</span>
-                                </h3>
-                                <span class="text-[10px] uppercase font-bold tracking-wider px-2.5 py-1 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 rounded-full">Para WhatsApp</span>
-                            </div>
-
-                            <div class="bg-emerald-950/30 border border-emerald-500/20 rounded-2xl p-5 mb-6 text-slate-200 text-sm font-sans leading-relaxed whitespace-pre-wrap select-all shadow-inner relative overflow-hidden">
-                                <div id="previewContent"></div>
-                            </div>
-                        </div>
-
-                        <!-- Action Buttons -->
-                        <div class="space-y-3 pt-2">
-                            <button onclick="copyAndSendWhatsApp()" class="w-full py-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-2xl shadow-lg hover:shadow-emerald-500/25 transition-all duration-200 flex items-center justify-center gap-3 text-base">
-                                <i class="fa-brands fa-whatsapp text-xl"></i>
-                                <span>Copiar y Enviar a WhatsApp</span>
-                            </button>
-
-                            <button onclick="copyOnlyText()" class="w-full py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm">
-                                <i class="fa-regular fa-copy text-brand-300"></i>
-                                <span>Solo Copiar Texto</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-        </main>
-    </div>
-
     <!-- TOAST NOTIFICATION -->
     <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 bg-emerald-600 text-white font-medium px-5 py-3 rounded-2xl shadow-2xl flex items-center gap-3 border border-emerald-400/30">
         <i class="fa-solid fa-circle-check text-lg"></i>
@@ -627,8 +464,6 @@
 
     <!-- JavaScript Logic -->
     <script>
-        let formattedMessage = '';
-
         // Configuración de Firebase (estos datos no son secretos)
         const firebaseConfig = {
             apiKey: "AIzaSyDmihXiHpdYTeGaqDa8HXDhcN1kY7haSNU",
@@ -640,8 +475,8 @@
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
-        // La sesión no se guarda: al recargar la página se vuelve a la parte pública
-        auth.setPersistence(firebase.auth.Auth.Persistence.NONE);
+        // La sesión dura mientras la pestaña esté abierta (así pasa al panel de encargados)
+        auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
         // Los encargados entran con un nombre; por detrás se convierte en este correo
         const LOGIN_DOMAIN = '@matrimonios.app';
@@ -674,66 +509,12 @@
                 await auth.signInWithEmailAndPassword(email, passInput);
 
                 if (errorEl) errorEl.classList.add('hidden');
-                closeModal('encargadosModal');
+                try { sessionStorage.setItem('encargadoNombre', userInput); } catch (e) {}
 
-                document.getElementById('publicSite').classList.add('hidden');
-                document.getElementById('adminSite').classList.remove('hidden');
-                document.getElementById('adminSite').classList.add('flex');
-
-                document.getElementById('activeUser').innerText = userInput;
-                window.scrollTo(0, 0);
-                updatePreview();
+                // El panel de encargados está en su propio archivo
+                window.location.href = 'encargados.html';
             } catch (error) {
                 if (errorEl) errorEl.classList.remove('hidden');
-            }
-        }
-
-        // Logout from Admin Site
-        function logoutAdmin() {
-            auth.signOut();
-            document.getElementById('adminSite').classList.add('hidden');
-            document.getElementById('adminSite').classList.remove('flex');
-            document.getElementById('publicSite').classList.remove('hidden');
-            document.getElementById('loginUsername').value = '';
-            document.getElementById('loginPassword').value = '';
-            window.scrollTo(0, 0);
-        }
-
-        // Generate Formatted Text & Update Live Preview synchronously
-        function updatePreview() {
-            const fecha = document.getElementById('inputFecha')?.value.trim() || 'A definir';
-            const hora = document.getElementById('inputHora')?.value.trim() || 'A definir';
-            const tema = document.getElementById('inputTema')?.value.trim() || 'Pendiente';
-            const multimedia = document.getElementById('inputMultimedia')?.value.trim() || 'Pendiente';
-            const preside = document.getElementById('inputPreside')?.value.trim() || 'Pendiente';
-            const coro = document.getElementById('inputCoro')?.value.trim() || 'Pendiente';
-            const rompehielo = document.getElementById('inputRompehielo')?.value.trim() || 'Pendiente';
-            const orador = document.getElementById('inputOrador')?.value.trim() || 'Pendiente';
-            const necesidades = document.getElementById('inputNecesidades')?.value.trim() || 'Ninguna por el momento';
-
-            formattedMessage = `📌 *REUNIÓN DE MATRIMONIOS — ORGANIZACIÓN*
-🏛️ *Iglesia San Martín 19*
-📅 *Fecha:* ${fecha}
-⏰ *Hora:* ${hora}
-
-📖 *TEMA DE ENSEÑANZA:*
-${tema}
-
-👥 *ASIGNACIÓN DE ENCARGADOS:*
-💻 *Multimedia:* ${multimedia}
-🎙️ *Preside:* ${preside}
-🎵 *Director de Coro:* ${coro}
-🧊 *Rompehielo:* ${rompehielo}
-🗣️ *Orador:* ${orador}
-
-📋 *¿QUÉ SE NECESITA?*
-${necesidades}
-
-¡Bendiciones a todos los servidores! 🙏✨`;
-
-            const previewElement = document.getElementById('previewContent');
-            if (previewElement) {
-                previewElement.innerText = formattedMessage;
             }
         }
 
@@ -759,42 +540,6 @@ ${necesidades}
                     toast.classList.add('translate-y-20', 'opacity-0');
                 }, 3000);
             }
-        }
-
-        // Copy and Send via WhatsApp
-        function copyAndSendWhatsApp() {
-            updatePreview();
-            copyToClipboardText(formattedMessage);
-            showToast('¡Texto copiado! Abriendo WhatsApp...');
-            
-            const encodedText = encodeURIComponent(formattedMessage);
-            setTimeout(() => {
-                window.open(`https://wa.me/?text=${encodedText}`, '_blank');
-            }, 600);
-        }
-
-        // Copy Only
-        function copyOnlyText() {
-            updatePreview();
-            copyToClipboardText(formattedMessage);
-            showToast('¡Texto copiado al portapapeles!');
-        }
-
-        // Reset Form
-        function resetForm() {
-            if(document.getElementById('inputTema')) document.getElementById('inputTema').value = '';
-            if(document.getElementById('inputMultimedia')) document.getElementById('inputMultimedia').value = '';
-            if(document.getElementById('inputPreside')) document.getElementById('inputPreside').value = '';
-            if(document.getElementById('inputCoro')) document.getElementById('inputCoro').value = '';
-            if(document.getElementById('inputRompehielo')) document.getElementById('inputRompehielo').value = '';
-            if(document.getElementById('inputOrador')) document.getElementById('inputOrador').value = '';
-            if(document.getElementById('inputNecesidades')) document.getElementById('inputNecesidades').value = '';
-            updatePreview();
-        }
-
-        // Initial preview generation on load
-        window.onload = function() {
-            updatePreview();
         }
     </script>
 </body>
