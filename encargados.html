@@ -18,6 +18,7 @@
     <!-- Firebase (inicio de sesión de encargados) -->
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
     
     <script>
         tailwind.config = {
@@ -125,6 +126,11 @@
                         <span>Asignación de Roles</span>
                     </h3>
 
+                    <div class="-mt-2 mb-5 flex flex-wrap items-center justify-between gap-2 text-xs">
+                        <p id="ultimaModificacion" class="text-slate-400">Cargando...</p>
+                        <span id="estadoGuardado" class="text-slate-500"></span>
+                    </div>
+
                     <form class="space-y-5">
                         
                         <!-- Fecha y Hora -->
@@ -133,13 +139,13 @@
                                 <label for="inputFecha" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                     <i class="fa-regular fa-calendar mr-1 text-brand-400"></i> Fecha de la Reunión
                                 </label>
-                                <input type="text" id="inputFecha" onkeyup="updatePreview()" oninput="updatePreview()" placeholder="Ej. Viernes, 28 de Noviembre" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                                <input type="text" id="inputFecha" oninput="onCambio()" placeholder="Ej. Viernes, 28 de Noviembre" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                             </div>
                             <div>
                                 <label for="inputHora" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                     <i class="fa-regular fa-clock mr-1 text-brand-400"></i> Horario
                                 </label>
-                                <input type="text" id="inputHora" onkeyup="updatePreview()" oninput="updatePreview()" placeholder="Ej. 19:30 Hs" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                                <input type="text" id="inputHora" oninput="onCambio()" placeholder="Ej. 19:30 Hs" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                             </div>
                         </div>
 
@@ -148,7 +154,7 @@
                             <label for="inputTema" class="block text-xs font-semibold uppercase tracking-wider text-brand-300 mb-1.5">
                                 <i class="fa-solid fa-chalkboard-user mr-1 text-brand-400"></i> Tema de enseñanza
                             </label>
-                            <input type="text" id="inputTema" placeholder="Escribe el tema o título de la enseñanza" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-brand-500/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            <input type="text" id="inputTema" placeholder="Escribe el tema o título de la enseñanza" oninput="onCambio()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-brand-500/40 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                         </div>
 
                         <!-- Multimedia -->
@@ -156,7 +162,7 @@
                             <label for="inputMultimedia" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                 <i class="fa-solid fa-desktop mr-1 text-brand-400"></i> Multimedia
                             </label>
-                            <input type="text" id="inputMultimedia" placeholder="Escribe el nombre del encargado de multimedia" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            <input type="text" id="inputMultimedia" placeholder="Escribe el nombre del encargado de multimedia" oninput="onCambio()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                         </div>
 
                         <!-- Preside -->
@@ -164,7 +170,7 @@
                             <label for="inputPreside" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                 <i class="fa-solid fa-user-tie mr-1 text-brand-400"></i> Preside la reunión
                             </label>
-                            <input type="text" id="inputPreside" placeholder="Escribe quién preside la reunión" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            <input type="text" id="inputPreside" placeholder="Escribe quién preside la reunión" oninput="onCambio()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                         </div>
 
                         <!-- Director de coro -->
@@ -172,7 +178,7 @@
                             <label for="inputCoro" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                 <i class="fa-solid fa-music mr-1 text-brand-400"></i> Director de coro / Alabanza
                             </label>
-                            <input type="text" id="inputCoro" placeholder="Escribe el encargado de la música/alabanza" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            <input type="text" id="inputCoro" placeholder="Escribe el encargado de la música/alabanza" oninput="onCambio()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                         </div>
 
                         <!-- Rompehielo -->
@@ -180,7 +186,7 @@
                             <label for="inputRompehielo" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                 <i class="fa-solid fa-face-smile mr-1 text-brand-400"></i> Rompehielo
                             </label>
-                            <input type="text" id="inputRompehielo" placeholder="Persona o dinámica para el rompehielo" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            <input type="text" id="inputRompehielo" placeholder="Persona o dinámica para el rompehielo" oninput="onCambio()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                         </div>
 
                         <!-- Orador -->
@@ -188,15 +194,29 @@
                             <label for="inputOrador" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                 <i class="fa-solid fa-book-open-reader mr-1 text-brand-400"></i> Orador / Predicador
                             </label>
-                            <input type="text" id="inputOrador" placeholder="Nombre del orador o matrimonio expositor" onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                            <input type="text" id="inputOrador" placeholder="Nombre del orador o matrimonio expositor" oninput="onCambio()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
                         </div>
 
-                        <!-- Qué se necesita -->
+                        <!-- Escuelita niños -->
                         <div>
-                            <label for="inputNecesidades" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                            <label for="inputEscuelita" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                                <i class="fa-solid fa-child mr-1 text-brand-400"></i> Escuelita niños
+                            </label>
+                            <input type="text" id="inputEscuelita" placeholder="Escribe quién está a cargo de la escuelita de niños" oninput="onCambio()" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                        </div>
+
+                        <!-- Qué se necesita (lista con tildes) -->
+                        <div>
+                            <label for="inputNuevaNecesidad" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
                                 <i class="fa-solid fa-box-open mr-1 text-brand-400"></i> ¿Qué se necesita?
                             </label>
-                            <textarea id="inputNecesidades" rows="4" placeholder="Ej. Traer bocaditos para compartir, 40 hojas impresas, proyector..." onkeyup="updatePreview()" oninput="updatePreview()" class="w-full px-4 py-3 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all custom-scrollbar"></textarea>
+                            <div class="flex gap-2">
+                                <input type="text" id="inputNuevaNecesidad" placeholder="Ej. Bocaditos, proyector, 40 hojas impresas..." onkeydown="if(event.key==='Enter'){event.preventDefault();agregarNecesidad();}" class="flex-1 min-w-0 px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+                                <button type="button" onclick="agregarNecesidad()" class="shrink-0 px-4 py-2.5 bg-brand-500/20 hover:bg-brand-500/30 border border-brand-400/40 text-brand-200 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
+                                    <i class="fa-solid fa-plus"></i> <span>Agregar</span>
+                                </button>
+                            </div>
+                            <ul id="listaNecesidades" class="mt-3 space-y-2"></ul>
                         </div>
                     </form>
                 </div>
@@ -229,10 +249,23 @@
                                 <i class="fa-regular fa-copy text-brand-300"></i>
                                 <span>Solo Copiar Texto</span>
                             </button>
+
+                            <button onclick="abrirArchivar()" class="w-full py-3 bg-brand-500/10 hover:bg-brand-500/20 border border-brand-400/30 text-brand-200 font-semibold rounded-xl transition-all duration-200 flex items-center justify-center gap-2 text-sm">
+                                <i class="fa-solid fa-box-archive text-brand-300"></i>
+                                <span>Guardar en historial</span>
+                            </button>
                         </div>
                     </div>
                 </div>
 
+            </div>
+
+            <!-- Historial -->
+            <div class="mt-10 flex justify-center">
+                <button onclick="abrirHistorial()" class="inline-flex items-center gap-2 px-6 py-3 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 font-semibold rounded-2xl transition-colors text-sm">
+                    <i class="fa-solid fa-clock-rotate-left text-brand-300"></i>
+                    <span>Ver reuniones anteriores</span>
+                </button>
             </div>
         </main>
     </div>
@@ -243,8 +276,52 @@
         <span id="toastMsg">¡Texto copiado al portapapeles!</span>
     </div>
 
+    <!-- MODAL: Guardar en historial -->
+    <div id="archivarModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-navy-800 border border-white/10 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl">
+            <h3 class="text-xl font-serif font-bold text-white mb-1 flex items-center gap-2">
+                <i class="fa-solid fa-box-archive text-brand-300"></i> Guardar en historial
+            </h3>
+            <p class="text-slate-400 text-sm mb-5">Se guarda la reunión actual con su tema, orador y encargados.</p>
+
+            <label for="inputAsistencia" class="block text-xs font-semibold uppercase tracking-wider text-slate-300 mb-1.5">
+                <i class="fa-solid fa-people-group mr-1 text-brand-400"></i> Matrimonios que asistieron
+            </label>
+            <input type="number" id="inputAsistencia" min="0" inputmode="numeric" placeholder="Ej. 12 (puedes dejarlo vacío)" class="w-full px-4 py-2.5 bg-navy-950/60 border border-white/10 rounded-xl text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-brand-400 transition-all">
+
+            <label class="mt-4 flex items-center gap-2 text-sm text-slate-300 cursor-pointer">
+                <input type="checkbox" id="chkLimpiar" checked class="w-4 h-4 accent-emerald-500">
+                <span>Limpiar la planificación después de guardar</span>
+            </label>
+
+            <div class="mt-6 flex justify-end gap-3">
+                <button onclick="cerrarModal('archivarModal')" class="px-5 py-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-sm font-medium transition-colors">Cancelar</button>
+                <button id="btnArchivar" onclick="archivarReunion()" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-sm font-semibold transition-colors">Guardar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Reuniones anteriores -->
+    <div id="historialModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-navy-800 border border-white/10 rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col p-6 sm:p-8 shadow-2xl">
+            <div class="flex items-center justify-between mb-5">
+                <h3 class="text-xl font-serif font-bold text-white flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-brand-300"></i> Reuniones anteriores
+                </h3>
+                <button onclick="cerrarModal('historialModal')" class="text-slate-400 hover:text-white bg-white/5 hover:bg-white/10 rounded-full w-9 h-9 flex items-center justify-center transition-colors" aria-label="Cerrar">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="historialLista" class="overflow-y-auto custom-scrollbar space-y-3 pr-1"></div>
+        </div>
+    </div>
+
     <script>
         let formattedMessage = '';
+        let necesidades = [];            // Lista con tildes: [{ texto, hecho }]
+        let nombreActual = 'Encargado';
+        let saveTimer = null;
+        let cancelarEscucha = null;
 
         // Configuración de Firebase (estos datos no son secretos)
         const firebaseConfig = {
@@ -257,10 +334,29 @@
         };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
+        const db = firebase.firestore();
         auth.setPersistence(firebase.auth.Auth.Persistence.SESSION);
 
         const LOGIN_DOMAIN = '@matrimonios.app';
 
+        // Dónde se guardan los datos
+        const PLAN_REF = db.collection('planificacion').doc('actual');   // planificación en curso (compartida)
+        const HISTORIAL = db.collection('reuniones');                    // reuniones anteriores
+
+        // Campo del documento -> id de la casilla
+        const CAMPOS = {
+            fecha: 'inputFecha',
+            hora: 'inputHora',
+            tema: 'inputTema',
+            multimedia: 'inputMultimedia',
+            preside: 'inputPreside',
+            coro: 'inputCoro',
+            rompehielo: 'inputRompehielo',
+            orador: 'inputOrador',
+            escuelita: 'inputEscuelita'
+        };
+
+        // ---------- Acceso ----------
         // Solo entra quien haya iniciado sesión; si no, vuelve a la página principal
         auth.onAuthStateChanged(function (user) {
             if (!user) {
@@ -270,16 +366,21 @@
             let nombre = '';
             try { nombre = sessionStorage.getItem('encargadoNombre') || ''; } catch (e) {}
             if (!nombre) nombre = (user.email || '').replace(LOGIN_DOMAIN, '');
-            document.getElementById('activeUser').innerText = nombre || 'Encargado';
+            nombreActual = nombre || 'Encargado';
+            document.getElementById('activeUser').innerText = nombreActual;
 
             document.getElementById('cargando').classList.add('hidden');
             document.getElementById('adminSite').classList.remove('hidden');
             document.getElementById('adminSite').classList.add('flex');
+
+            renderNecesidades();
             updatePreview();
+            if (!cancelarEscucha) escucharPlanificacion();
         });
 
         // Cerrar sesión y volver a la página principal
         function logoutAdmin() {
+            if (cancelarEscucha) { cancelarEscucha(); cancelarEscucha = null; }
             const volver = function () {
                 try { sessionStorage.removeItem('encargadoNombre'); } catch (e) {}
                 window.location.replace('index.html');
@@ -287,17 +388,169 @@
             auth.signOut().then(volver).catch(volver);
         }
 
-        // Generate Formatted Text & Update Live Preview synchronously
+        // ---------- Guardado compartido ----------
+        function leerFormulario() {
+            const datos = {};
+            Object.keys(CAMPOS).forEach(function (k) {
+                datos[k] = document.getElementById(CAMPOS[k]).value;
+            });
+            return datos;
+        }
+
+        function setEstado(texto, esError) {
+            const el = document.getElementById('estadoGuardado');
+            if (!el) return;
+            el.textContent = texto;
+            el.className = esError ? 'text-red-300' : 'text-slate-500';
+        }
+
+        function formatearFecha(ts) {
+            const d = ts && ts.toDate ? ts.toDate() : null;
+            if (!d) return '';
+            return d.toLocaleString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+        }
+
+        function mostrarUltimaModificacion(d) {
+            const el = document.getElementById('ultimaModificacion');
+            if (!el) return;
+            if (!d || !d.actualizadoPor) {
+                el.textContent = 'Sin modificaciones todavía';
+                return;
+            }
+            const cuando = formatearFecha(d.actualizadoEn);
+            el.textContent = 'Última modificación: ' + d.actualizadoPor + (cuando ? ' · ' + cuando : '');
+        }
+
+        // Cada cambio actualiza la vista previa y se guarda solo (sin apretar nada)
+        function onCambio() {
+            updatePreview();
+            programarGuardado();
+        }
+
+        function programarGuardado() {
+            setEstado('Guardando...');
+            clearTimeout(saveTimer);
+            saveTimer = setTimeout(guardarPlanificacion, 700);
+        }
+
+        async function guardarPlanificacion() {
+            saveTimer = null;
+            const datos = leerFormulario();
+            datos.necesidades = necesidades;
+            datos.actualizadoPor = nombreActual;
+            datos.actualizadoEn = firebase.firestore.FieldValue.serverTimestamp();
+            try {
+                await PLAN_REF.set(datos);
+                setEstado('Guardado ✓');
+            } catch (e) {
+                setEstado(e && e.code === 'permission-denied' ? 'Sin permiso para guardar (revisa las reglas de Firestore)' : 'No se pudo guardar', true);
+            }
+        }
+
+        // Si otro encargado cambia algo, se ve acá al instante
+        function escucharPlanificacion() {
+            cancelarEscucha = PLAN_REF.onSnapshot(function (doc) {
+                if (doc.metadata.hasPendingWrites || saveTimer) return;   // cambios propios todavía sin guardar
+                if (!doc.exists) {
+                    mostrarUltimaModificacion(null);
+                    setEstado('');
+                    return;
+                }
+                const d = doc.data();
+                Object.keys(CAMPOS).forEach(function (k) {
+                    const el = document.getElementById(CAMPOS[k]);
+                    const valor = d[k] || '';
+                    if (el && el !== document.activeElement && el.value !== valor) el.value = valor;
+                });
+                necesidades = Array.isArray(d.necesidades) ? d.necesidades : [];
+                renderNecesidades();
+                mostrarUltimaModificacion(d);
+                updatePreview();
+            }, function (error) {
+                const sinPermiso = error && error.code === 'permission-denied';
+                document.getElementById('ultimaModificacion').textContent = '';
+                setEstado(sinPermiso ? 'Sin permiso para leer los datos (revisa las reglas de Firestore)' : 'No se pudo conectar con la base de datos', true);
+            });
+        }
+
+        // ---------- Lista con tildes ----------
+        function agregarNecesidad() {
+            const input = document.getElementById('inputNuevaNecesidad');
+            const texto = input.value.trim();
+            if (!texto) return;
+            necesidades.push({ texto: texto, hecho: false });
+            input.value = '';
+            renderNecesidades();
+            onCambio();
+            input.focus();
+        }
+
+        function renderNecesidades() {
+            const ul = document.getElementById('listaNecesidades');
+            if (!ul) return;
+            ul.innerHTML = '';
+            if (!necesidades.length) {
+                const vacio = document.createElement('li');
+                vacio.className = 'text-xs text-slate-500';
+                vacio.textContent = 'Todavía no hay nada en la lista.';
+                ul.appendChild(vacio);
+                return;
+            }
+            necesidades.forEach(function (item, i) {
+                const li = document.createElement('li');
+                li.className = 'flex items-center gap-3 px-3 py-2 bg-navy-950/60 border border-white/10 rounded-xl';
+
+                const chk = document.createElement('input');
+                chk.type = 'checkbox';
+                chk.checked = !!item.hecho;
+                chk.className = 'w-5 h-5 shrink-0 accent-emerald-500 cursor-pointer';
+                chk.setAttribute('aria-label', 'Marcar como listo: ' + item.texto);
+                chk.addEventListener('change', function () {
+                    necesidades[i].hecho = chk.checked;
+                    renderNecesidades();
+                    onCambio();
+                });
+
+                const txt = document.createElement('span');
+                txt.className = 'flex-1 text-sm break-words ' + (item.hecho ? 'line-through text-slate-500' : 'text-slate-200');
+                txt.textContent = item.texto;
+
+                const borrar = document.createElement('button');
+                borrar.type = 'button';
+                borrar.className = 'text-slate-500 hover:text-red-300 transition-colors';
+                borrar.setAttribute('aria-label', 'Quitar de la lista');
+                borrar.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+                borrar.addEventListener('click', function () {
+                    necesidades.splice(i, 1);
+                    renderNecesidades();
+                    onCambio();
+                });
+
+                li.appendChild(chk);
+                li.appendChild(txt);
+                li.appendChild(borrar);
+                ul.appendChild(li);
+            });
+        }
+
+        // ---------- Mensaje de WhatsApp ----------
         function updatePreview() {
-            const fecha = document.getElementById('inputFecha')?.value.trim() || 'A definir';
-            const hora = document.getElementById('inputHora')?.value.trim() || 'A definir';
-            const tema = document.getElementById('inputTema')?.value.trim() || 'Pendiente';
-            const multimedia = document.getElementById('inputMultimedia')?.value.trim() || 'Pendiente';
-            const preside = document.getElementById('inputPreside')?.value.trim() || 'Pendiente';
-            const coro = document.getElementById('inputCoro')?.value.trim() || 'Pendiente';
-            const rompehielo = document.getElementById('inputRompehielo')?.value.trim() || 'Pendiente';
-            const orador = document.getElementById('inputOrador')?.value.trim() || 'Pendiente';
-            const necesidades = document.getElementById('inputNecesidades')?.value.trim() || 'Ninguna por el momento';
+            const val = function (id, vacio) {
+                const el = document.getElementById(id);
+                return (el && el.value.trim()) || vacio;
+            };
+            const fecha = val('inputFecha', 'A definir');
+            const hora = val('inputHora', 'A definir');
+            const tema = val('inputTema', 'Pendiente');
+            const multimedia = val('inputMultimedia', 'Pendiente');
+            const preside = val('inputPreside', 'Pendiente');
+            const coro = val('inputCoro', 'Pendiente');
+            const rompehielo = val('inputRompehielo', 'Pendiente');
+            const orador = val('inputOrador', 'Pendiente');
+            const escuelita = val('inputEscuelita', 'Pendiente');
+            const lista = necesidades.length
+                ? necesidades.map(function (n) { return (n.hecho ? '✅ ' : '⬜ ') + n.texto; }).join('\n')
+                : 'Ninguna por el momento';
 
             formattedMessage = `📌 *REUNIÓN DE MATRIMONIOS — ORGANIZACIÓN*
 🏛️ *Iglesia San Martín 19*
@@ -313,9 +566,10 @@ ${tema}
 🎵 *Director de Coro:* ${coro}
 🧊 *Rompehielo:* ${rompehielo}
 🗣️ *Orador:* ${orador}
+🧒 *Escuelita Niños:* ${escuelita}
 
 📋 *¿QUÉ SE NECESITA?*
-${necesidades}
+${lista}
 
 ¡Bendiciones a todos los servidores! 🙏✨`;
 
@@ -336,10 +590,12 @@ ${necesidades}
         }
 
         // Toast Helper
-        function showToast(msg) {
+        function showToast(msg, esError) {
             const toast = document.getElementById('toast');
             const toastMsg = document.getElementById('toastMsg');
             if (toast && toastMsg) {
+                toast.classList.toggle('bg-emerald-600', !esError);
+                toast.classList.toggle('bg-red-600', !!esError);
                 toastMsg.innerText = msg;
                 toast.classList.remove('translate-y-20', 'opacity-0');
 
@@ -368,13 +624,145 @@ ${necesidades}
             showToast('¡Texto copiado al portapapeles!');
         }
 
-        // Reset Form
-        function resetForm() {
-            ['inputTema','inputMultimedia','inputPreside','inputCoro','inputRompehielo','inputOrador','inputNecesidades'].forEach(function (id) {
-                const el = document.getElementById(id);
-                if (el) el.value = '';
+        // ---------- Limpiar ----------
+        function vaciarPlanificacion() {
+            Object.keys(CAMPOS).forEach(function (k) {
+                document.getElementById(CAMPOS[k]).value = '';
             });
-            updatePreview();
+            document.getElementById('inputNuevaNecesidad').value = '';
+            necesidades = [];
+            renderNecesidades();
+            onCambio();
+        }
+
+        function resetForm() {
+            if (!confirm('Se va a borrar la planificación para todos los encargados. ¿Continuar?')) return;
+            vaciarPlanificacion();
+        }
+
+        // ---------- Ventanas ----------
+        function abrirModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function cerrarModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        // ---------- Historial ----------
+        function abrirArchivar() {
+            const v = leerFormulario();
+            if (!v.tema.trim() && !v.fecha.trim()) {
+                showToast('Completa al menos la fecha o el tema para guardar la reunión', true);
+                return;
+            }
+            document.getElementById('inputAsistencia').value = '';
+            document.getElementById('chkLimpiar').checked = true;
+            abrirModal('archivarModal');
+        }
+
+        async function archivarReunion() {
+            const texto = document.getElementById('inputAsistencia').value.trim();
+            let asistencia = null;
+            if (texto !== '') {
+                const n = Number(texto);
+                if (!Number.isInteger(n) || n < 0) {
+                    showToast('La asistencia tiene que ser un número entero', true);
+                    return;
+                }
+                asistencia = n;
+            }
+            const boton = document.getElementById('btnArchivar');
+            boton.disabled = true;
+            try {
+                const reunion = leerFormulario();
+                reunion.asistencia = asistencia;
+                reunion.guardadoPor = nombreActual;
+                reunion.creadoEn = firebase.firestore.FieldValue.serverTimestamp();
+                await HISTORIAL.add(reunion);
+                cerrarModal('archivarModal');
+                showToast('¡Reunión guardada en el historial!');
+                if (document.getElementById('chkLimpiar').checked) vaciarPlanificacion();
+            } catch (e) {
+                showToast('No se pudo guardar en el historial', true);
+            } finally {
+                boton.disabled = false;
+            }
+        }
+
+        function crearElemento(tag, clase, texto) {
+            const el = document.createElement(tag);
+            if (clase) el.className = clase;
+            if (texto !== undefined) el.textContent = texto;
+            return el;
+        }
+
+        function crearTarjetaHistorial(id, d) {
+            const card = crearElemento('div', 'bg-navy-950/60 border border-white/10 rounded-2xl p-4');
+
+            const arriba = crearElemento('div', 'flex items-start justify-between gap-3 mb-1');
+            const cuando = [d.fecha, d.hora].filter(Boolean).join(' · ') || 'Sin fecha';
+            arriba.appendChild(crearElemento('p', 'text-xs font-semibold uppercase tracking-wider text-brand-300', cuando));
+            const borrar = crearElemento('button', 'text-slate-500 hover:text-red-300 transition-colors');
+            borrar.type = 'button';
+            borrar.setAttribute('aria-label', 'Borrar esta reunión del historial');
+            borrar.innerHTML = '<i class="fa-solid fa-trash-can"></i>';
+            borrar.addEventListener('click', async function () {
+                if (!confirm('¿Borrar esta reunión del historial?')) return;
+                try {
+                    await HISTORIAL.doc(id).delete();
+                    abrirHistorial();
+                } catch (e) {
+                    showToast('No se pudo borrar la reunión', true);
+                }
+            });
+            arriba.appendChild(borrar);
+            card.appendChild(arriba);
+
+            card.appendChild(crearElemento('h4', 'font-serif font-bold text-white text-lg mb-2', d.tema || 'Sin tema'));
+
+            const filas = [
+                ['Orador', d.orador],
+                ['Multimedia', d.multimedia],
+                ['Preside', d.preside],
+                ['Coro / Alabanza', d.coro],
+                ['Rompehielo', d.rompehielo],
+                ['Escuelita niños', d.escuelita]
+            ];
+            const grilla = crearElemento('div', 'grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-sm');
+            filas.forEach(function (f) {
+                if (!f[1]) return;
+                const fila = crearElemento('p', 'text-slate-300');
+                fila.appendChild(crearElemento('span', 'text-slate-500', f[0] + ': '));
+                fila.appendChild(document.createTextNode(f[1]));
+                grilla.appendChild(fila);
+            });
+            card.appendChild(grilla);
+
+            if (d.asistencia !== null && d.asistencia !== undefined) {
+                const asis = crearElemento('p', 'mt-3 inline-flex items-center gap-2 text-sm text-emerald-300 bg-emerald-500/10 border border-emerald-500/20 rounded-full px-3 py-1');
+                asis.innerHTML = '<i class="fa-solid fa-people-group"></i>';
+                asis.appendChild(document.createTextNode(' ' + d.asistencia + (d.asistencia === 1 ? ' matrimonio' : ' matrimonios')));
+                card.appendChild(asis);
+            }
+
+            const pie = (d.guardadoPor ? 'Guardada por ' + d.guardadoPor : 'Guardada') + (formatearFecha(d.creadoEn) ? ' el ' + formatearFecha(d.creadoEn) : '');
+            card.appendChild(crearElemento('p', 'mt-3 text-[11px] text-slate-500', pie));
+            return card;
+        }
+
+        async function abrirHistorial() {
+            abrirModal('historialModal');
+            const cont = document.getElementById('historialLista');
+            cont.innerHTML = '';
+            cont.appendChild(crearElemento('p', 'text-sm text-slate-400', 'Cargando...'));
+            try {
+                const snap = await HISTORIAL.orderBy('creadoEn', 'desc').limit(100).get();
+                cont.innerHTML = '';
+                if (snap.empty) {
+                    cont.appendChild(crearElemento('p', 'text-sm text-slate-400', 'Todavía no hay reuniones guardadas.'));
+                    return;
+                }
+                snap.forEach(function (doc) { cont.appendChild(crearTarjetaHistorial(doc.id, doc.data())); });
+            } catch (e) {
+                cont.innerHTML = '';
+                cont.appendChild(crearElemento('p', 'text-sm text-red-300', 'No se pudo cargar el historial.'));
+            }
         }
     </script>
 </body>
