@@ -112,9 +112,14 @@
                     <h1 class="text-2xl sm:text-3xl font-serif font-bold text-white">Planificación de la Reunión</h1>
                     <p class="text-slate-400 text-sm mt-1">Completa las asignaciones del evento para generar el resumen listo para WhatsApp.</p>
                 </div>
-                <button onclick="resetForm()" class="self-start md:self-auto px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-xs font-semibold transition-colors flex items-center gap-2">
-                    <i class="fa-solid fa-rotate-left"></i> Limpiar Campos
-                </button>
+                <div class="self-start md:self-auto flex flex-wrap gap-2">
+                    <button id="btnRestaurar" onclick="restaurarRespaldo()" class="hidden px-4 py-2 bg-brand-500/10 hover:bg-brand-500/20 border border-brand-400/30 text-brand-200 rounded-xl text-xs font-semibold transition-colors items-center gap-2">
+                        <i class="fa-solid fa-clock-rotate-left"></i> Restaurar lo último borrado
+                    </button>
+                    <button onclick="resetForm()" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-slate-300 rounded-xl text-xs font-semibold transition-colors flex items-center gap-2">
+                        <i class="fa-solid fa-rotate-left"></i> Limpiar Campos
+                    </button>
+                </div>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
@@ -276,6 +281,15 @@
         <span id="toastMsg">¡Texto copiado al portapapeles!</span>
     </div>
 
+    <!-- AVISO DESHACER (30 segundos) -->
+    <div id="undoBar" class="fixed bottom-20 sm:bottom-6 left-4 right-4 sm:right-auto sm:left-6 z-50 hidden items-center gap-4 bg-navy-800 border border-white/15 text-slate-100 px-5 py-3 rounded-2xl shadow-2xl">
+        <span id="undoMsg" class="text-sm flex-1"></span>
+        <button type="button" onclick="deshacer()" class="shrink-0 inline-flex items-center gap-2 px-3 py-1.5 bg-brand-500/20 hover:bg-brand-500/30 border border-brand-400/40 text-brand-200 rounded-lg text-sm font-semibold transition-colors">
+            <i class="fa-solid fa-rotate-left"></i>
+            <span>Deshacer<span id="undoCount"></span></span>
+        </button>
+    </div>
+
     <!-- MODAL: Guardar en historial -->
     <div id="archivarModal" class="fixed inset-0 bg-slate-900/70 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
         <div class="bg-navy-800 border border-white/10 rounded-3xl max-w-md w-full p-6 sm:p-8 shadow-2xl">
@@ -322,6 +336,10 @@
         let nombreActual = 'Encargado';
         let saveTimer = null;
         let cancelarEscucha = null;
+        let cancelarRespaldo = null;
+        let respaldoActual = null;       // copia de lo último que se borró con "Limpiar Campos"
+        let undoStack = [];              // acciones que se pueden deshacer
+        let undoTimer = null;
 
         // Configuración de Firebase (estos datos no son secretos)
         const firebaseConfig = {
@@ -342,6 +360,7 @@
         // Dónde se guardan los datos
         const PLAN_REF = db.collection('planificacion').doc('actual');   // planificación en curso (compartida)
         const HISTORIAL = db.collection('reuniones');                    // reuniones anteriores
+        const RESPALDO_REF = db.collection('planificacion').doc('respaldo'); // copia de lo último borrado
 
         // Campo del documento -> id de la casilla
         const CAMPOS = {
@@ -381,6 +400,7 @@
         // Cerrar sesión y volver a la página principal
         function logoutAdmin() {
             if (cancelarEscucha) { cancelarEscucha(); cancelarEscucha = null; }
+            if (cancelarRespaldo) { cancelarRespaldo(); cancelarRespaldo = null; }
             const volver = function () {
                 try { sessionStorage.removeItem('encargadoNombre'); } catch (e) {}
                 window.location.replace('index.html');
@@ -449,6 +469,13 @@
 
         // Si otro encargado cambia algo, se ve acá al instante
         function escucharPlanificacion() {
+            cancelarRespaldo = RESPALDO_REF.onSnapshot(function (doc) {
+                respaldoActual = doc.exists ? doc.data() : null;
+                actualizarBotonRestaurar();
+            }, function () {
+                respaldoActual = null;
+                actualizarBotonRestaurar();
+            });
             cancelarEscucha = PLAN_REF.onSnapshot(function (doc) {
                 if (doc.metadata.hasPendingWrites || saveTimer) return;   // cambios propios todavía sin guardar
                 if (!doc.exists) {
@@ -521,7 +548,8 @@
                 borrar.setAttribute('aria-label', 'Quitar de la lista');
                 borrar.innerHTML = '<i class="fa-solid fa-xmark"></i>';
                 borrar.addEventListener('click', function () {
-                    necesidades.splice(i, 1);
+                    const quitado = necesidades.splice(i, 1)[0];
+                    apilarUndo({ tipo: 'item', item: quitado, indice: i }, 'Se quitó "' + abreviar(quitado.texto) + '" de la lista');
                     renderNecesidades();
                     onCambio();
                 });
@@ -635,9 +663,119 @@ ${lista}
             onCambio();
         }
 
+        function abreviar(texto) {
+            return texto.length > 30 ? texto.slice(0, 30) + '…' : texto;
+        }
+
+        function tomarCopia() {
+            const copia = leerFormulario();
+            copia.necesidades = necesidades.map(function (n) { return { texto: n.texto, hecho: !!n.hecho }; });
+            return copia;
+        }
+
+        function copiaTieneContenido(c) {
+            return Object.keys(CAMPOS).some(function (k) { return (c[k] || '').trim() !== ''; }) ||
+                   (c.necesidades && c.necesidades.length > 0);
+        }
+
+        function aplicarCopia(c) {
+            Object.keys(CAMPOS).forEach(function (k) {
+                document.getElementById(CAMPOS[k]).value = c[k] || '';
+            });
+            necesidades = Array.isArray(c.necesidades)
+                ? c.necesidades.map(function (n) { return { texto: n.texto, hecho: !!n.hecho }; })
+                : [];
+            renderNecesidades();
+            onCambio();
+        }
+
         function resetForm() {
             if (!confirm('Se va a borrar la planificación para todos los encargados. ¿Continuar?')) return;
+            const copia = tomarCopia();
+            const habiaAlgo = copiaTieneContenido(copia);
             vaciarPlanificacion();
+            if (!habiaAlgo) return;
+            guardarRespaldo(copia);
+            apilarUndo({ tipo: 'todo', copia: copia }, 'Se limpió la planificación');
+        }
+
+        // ---------- Copia de respaldo (lo último borrado con "Limpiar Campos") ----------
+        async function guardarRespaldo(copia) {
+            try {
+                const datos = Object.assign({}, copia, {
+                    borradoPor: nombreActual,
+                    borradoEn: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                await RESPALDO_REF.set(datos);
+            } catch (e) {
+                showToast('No se pudo guardar la copia de respaldo', true);
+            }
+        }
+
+        function actualizarBotonRestaurar() {
+            const btn = document.getElementById('btnRestaurar');
+            if (!btn) return;
+            if (respaldoActual && copiaTieneContenido(respaldoActual)) {
+                const cuando = formatearFecha(respaldoActual.borradoEn);
+                btn.title = 'Borrado por ' + (respaldoActual.borradoPor || 'un encargado') + (cuando ? ' el ' + cuando : '');
+                btn.classList.remove('hidden');
+                btn.classList.add('flex');
+            } else {
+                btn.classList.add('hidden');
+                btn.classList.remove('flex');
+            }
+        }
+
+        function restaurarRespaldo() {
+            if (!respaldoActual) return;
+            if (copiaTieneContenido(tomarCopia()) &&
+                !confirm('Se va a reemplazar lo que hay ahora por lo último que se borró. ¿Continuar?')) return;
+            aplicarCopia(respaldoActual);
+            RESPALDO_REF.delete().catch(function () {});
+            showToast('¡Se restauró lo último borrado!');
+        }
+
+        // ---------- Deshacer (disponible durante 30 segundos) ----------
+        function apilarUndo(accion, mensaje) {
+            undoStack.push(accion);
+            mostrarUndo(mensaje);
+        }
+
+        function mostrarUndo(mensaje) {
+            const bar = document.getElementById('undoBar');
+            document.getElementById('undoMsg').textContent = mensaje;
+            document.getElementById('undoCount').textContent = undoStack.length > 1 ? ' (' + undoStack.length + ')' : '';
+            bar.classList.remove('hidden');
+            bar.classList.add('flex');
+            clearTimeout(undoTimer);
+            undoTimer = setTimeout(ocultarUndo, 30000);
+        }
+
+        function ocultarUndo() {
+            clearTimeout(undoTimer);
+            undoStack = [];
+            const bar = document.getElementById('undoBar');
+            bar.classList.add('hidden');
+            bar.classList.remove('flex');
+        }
+
+        function deshacer() {
+            const accion = undoStack.pop();
+            if (!accion) { ocultarUndo(); return; }
+            if (accion.tipo === 'item') {
+                necesidades.splice(Math.min(accion.indice, necesidades.length), 0, accion.item);
+                renderNecesidades();
+                onCambio();
+            } else if (accion.tipo === 'todo') {
+                aplicarCopia(accion.copia);
+                RESPALDO_REF.delete().catch(function () {});
+            }
+            if (undoStack.length) {
+                mostrarUndo('Cambio deshecho');
+            } else {
+                ocultarUndo();
+                showToast('Cambio deshecho');
+            }
         }
 
         // ---------- Ventanas ----------
